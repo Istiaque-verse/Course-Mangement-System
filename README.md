@@ -51,31 +51,6 @@ CourseManagement/
 - MySQL 8.0+
 - Apache Tomcat 9.0+
 
-## Installation & Setup
-
-### 1. Database Setup
-
-1. Start MySQL service
-2. Update database credentials in `src/main/java/com/cms/util/DBUtil.java`
-3. Run the database initialization script:
-
-```bash
-./init-database.sh
-```
-
-Or manually execute the SQL schema:
-
-```bash
-mysql -u root -p < src/main/resources/schema.sql
-```
-
-### 2. Build the Application
-
-```bash
-mvn clean package
-```
-
-This will create a WAR file in the `target/` directory.
 
 ### 3. Deploy to Tomcat
 
@@ -164,51 +139,3 @@ private static final String DB_PASSWORD = "your_password";
 ### Application Configuration
 The application uses `web.xml` for servlet configuration and security constraints.
 
-## Development
-
-### Adding New Features
-1. Create model classes in `com.cms.model`
-2. Implement DAO classes in `com.cms.dao`
-3. Create servlets in `com.cms.servlet`
-4. Add JSP pages in `webapp/`
-5. Update `web.xml` if needed
-
-### Code Style
-- Follow Java naming conventions
-- Use proper error handling
-- Include Javadoc comments
-- Maintain consistent formatting
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Database Connection Failed**
-   - Check MySQL service is running
-   - Verify database credentials
-   - Ensure database exists
-
-2. **Build Errors**
-   - Check Java version compatibility
-   - Verify Maven dependencies
-   - Clean and rebuild project
-
-3. **Deployment Issues**
-   - Check Tomcat logs
-   - Verify WAR file deployment
-   - Check port availability
-
-## License
-
-This project is created for educational purposes.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## Support
-
-For issues and questions, please check the troubleshooting section or create an issue in the repository.
