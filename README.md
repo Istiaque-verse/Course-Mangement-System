@@ -2,6 +2,10 @@
 
 A complete Servlet + JSP web application for managing courses, students, and teachers with role-based access control.
 
+
+# Hosted at   http://localhost:8080/CourseManagement/login
+
+
 ## Features
 
 - **Role-based Authentication**: Admin, Teacher, and Student roles
@@ -51,20 +55,20 @@ CourseManagement/
 - MySQL 8.0+
 - Apache Tomcat 9.0+
 
+###  Database Setup
 
-### 3. Deploy to Tomcat
+1. Start MySQL service
+2. Update database credentials in `src/main/java/com/cms/util/DBUtil.java`
+3. Create the Database
 
-1. Copy the generated WAR file to Tomcat's `webapps/` directory
-2. Start Tomcat server
-3. Access the application at `http://localhost:8080/CourseManagement`
 
 ## Default Login Credentials
 
-| Role    | Username | Password  |
-|---------|----------|-----------|
-| Admin   | admin    | admin123  |
-| Teacher | teacher1 | admin123  |
-| Student | student1 | admin123  |
+| Role    | Username |   Password   |
+|---------|----------|--------------|
+| Admin   | admin1   | password123  |
+| Teacher | teacher1 | password123  |
+| Student | student1 | password123  |
 
 ## User Roles & Permissions
 
@@ -88,12 +92,12 @@ CourseManagement/
 
 ## API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET    | /login   | Login page |
+| Method | Endpoint |    Description    |
+|--------|----------|-------------------|
+| GET    | /login   | Login page        |
 | POST   | /login   | Authenticate user |
-| GET    | /logout  | Logout user |
-| GET    | /admin   | Admin dashboard |
+| GET    | /logout  | Logout user       |
+| GET    | /admin   | Admin dashboard   |
 | GET    | /student | Student dashboard |
 | GET    | /teacher | Teacher dashboard |
 
@@ -133,9 +137,11 @@ Update the database connection details in `DBUtil.java`:
 ```java
 private static final String DB_URL = "jdbc:mysql://localhost:3306/course_management?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true";
 private static final String DB_USERNAME = "root";
-private static final String DB_PASSWORD = "your_password";
+private static final String DB_PASSWORD = " ";
 ```
 
 ### Application Configuration
 The application uses `web.xml` for servlet configuration and security constraints.
+
+
 
