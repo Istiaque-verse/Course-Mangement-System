@@ -115,7 +115,7 @@ mysql --version
 ### 2. Clone the repository
 
 git clone git@github.com:Istiaque-verse/Course-Mangement-System.git
-cd Course-Mangement-System
+
 
 
 ## 🗄 Database Setup
