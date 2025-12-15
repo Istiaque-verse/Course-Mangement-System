@@ -1,4 +1,4 @@
-# Course Management System for CS250 (JSP / Servlet / MySQL)
+# Course Management System for CS-250 (JSP/Servlet/MySQL)
 
 A role‑based Course Management System built with Java Servlets, JSP, JSTL, Bootstrap, and MySQL. It provides separate portals for Admin, Teacher, and Student with a clean, modern UI and clear separation of concerns (MVC style).
 
@@ -91,10 +91,6 @@ Course-Mangement-System/
 └─ README.md
 
 
-
-
-Adjust file names if your package or JSP names differ.
-
 ---
 
 ## 🚀 Getting Started
@@ -115,16 +111,12 @@ java -version
 mvn -version
 mysql --version
 
-text
 
 ### 2. Clone the repository
 
 git clone git@github.com:Istiaque-verse/Course-Mangement-System.git
 cd Course-Mangement-System
 
-text
-
----
 
 ## 🗄 Database Setup
 
@@ -135,13 +127,11 @@ Log into MySQL:
 CREATE DATABASE course_management CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE course_management;
 
-text
 
 2. **Create tables**
 
-Create minimal required tables (adapt if your schema is already exported):
+Create minimal required tables :
 
--- users
 CREATE TABLE users (
 id INT AUTO_INCREMENT PRIMARY KEY,
 username VARCHAR(50) NOT NULL UNIQUE,
@@ -152,7 +142,7 @@ email VARCHAR(150) NOT NULL,
 role ENUM('ADMIN','TEACHER','STUDENT') NOT NULL
 );
 
--- courses
+
 CREATE TABLE courses (
 id INT AUTO_INCREMENT PRIMARY KEY,
 course_code VARCHAR(20) NOT NULL UNIQUE,
@@ -164,7 +154,7 @@ teacher_id INT NOT NULL,
 FOREIGN KEY (teacher_id) REFERENCES users(id)
 );
 
--- registrations (enrollments)
+
 CREATE TABLE registrations (
 id INT AUTO_INCREMENT PRIMARY KEY,
 student_id INT NOT NULL,
@@ -176,7 +166,6 @@ FOREIGN KEY (student_id) REFERENCES users(id),
 FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
-text
 
 3. **Seed initial data**
 
@@ -192,9 +181,7 @@ VALUES ('teacher1', 'teacher123', 'John', 'Doe', 'teacher1@example.com', 'TEACHE
 INSERT INTO users (username, password, first_name, last_name, email, role)
 VALUES ('student1', 'student123', 'Alice', 'Smith', 'student1@example.com', 'STUDENT');
 
-text
 
-If you already have an SQL dump, mention it here (e.g. `db/schema.sql`) and instruct users to import it.
 
 4. **Configure DB connection**
 
@@ -204,35 +191,29 @@ private static final String URL = "jdbc:mysql://localhost:3306/course_management
 private static final String USER = "your_mysql_user";
 private static final String PASSWORD = "your_mysql_password";
 
-text
-
 Ensure MySQL JDBC driver is declared in `pom.xml`:
 
 <dependency> <groupId>mysql</groupId> <artifactId>mysql-connector-j</artifactId> <version>8.0.33</version> </dependency> ```
+
+
 🧱 Build and Run
+
 1. Build with Maven
 From the project root:
-
-text
 mvn clean package
 This creates target/CourseManagement.war (or similar, depending on artifactId).
 
 2. Deploy to Tomcat
 Copy the WAR to Tomcat’s webapps directory:
-
-text
 cp target/CourseManagement.war /path/to/tomcat/webapps/
-Restart Tomcat:
 
-text
+Restart Tomcat:
 cd /path/to/tomcat/bin
 ./shutdown.sh 2>/dev/null || true
 ./startup.sh
-3. Access the application
-Open:
 
-http://localhost:8080/CourseManagement/login
-(context path may differ: check WAR name or Tomcat manager)
+3. Access the application
+Open: http://localhost:8080/CourseManagement/login
 
 Use the default credentials you configured, e.g.:
 
@@ -294,6 +275,7 @@ text
     <artifactId>jakarta.servlet.jsp.jstl</artifactId>
     <version>2.0.0</version>
 </dependency>
+
 📌 Roadmap / Ideas
 Password hashing (BCrypt) instead of plain text
 
@@ -327,6 +309,5 @@ Add your preferred license here (e.g. MIT, Apache 2.0), and include the correspo
 
 🙋 Support
 For questions or suggestions, open an issue in the GitHub repository:
-
 https://github.com/Istiaque-verse/Course-Mangement-System/issues
 
