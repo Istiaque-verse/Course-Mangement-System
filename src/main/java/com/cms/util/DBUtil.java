@@ -5,10 +5,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBUtil {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/course_management_system?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "YourNewPassword";
-    
+   private static final String DB_URL =
+    "jdbc:mysql://localhost:3306/course_management" +
+    "?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true" +
+    "&useUnicode=true&characterEncoding=UTF-8";
+
+private static final String DB_USERNAME = "cms_user";
+private static final String DB_PASSWORD = "cms_password123";
+
+
     static {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");

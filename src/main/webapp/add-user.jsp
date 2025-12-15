@@ -9,38 +9,92 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f9fafb;
+            min-height: 100vh;
+        }
+        :root {
+            --deep-blue: #1e3c72;
+            --deep-blue-alt: #2a5298;
+            --deep-blue-light: #e5ecf8;
+            --text-dark: #0f172a;
+        }
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--deep-blue) 0%, var(--deep-blue-alt) 60%, #0b1120 100%);
+            color: #fff;
         }
         .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             padding: 12px 20px;
             border-radius: 8px;
             margin: 2px 0;
             transition: all 0.3s;
+            font-weight: 500;
         }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.16);
+            transform: translateX(4px);
         }
         .main-content {
-            background-color: #f8f9fa;
+            background-color: #f9fafb;
             min-height: 100vh;
         }
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 15px rgba(15, 23, 42, 0.12);
+            background-color: #ffffff;
+            color: var(--text-dark);
         }
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        .card-header {
+            background-color: var(--deep-blue-light);
+            border-bottom: 1px solid #d1d5db;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        .form-control,
+        .form-select {
+            background-color: #f9fafb;
+            border-color: #cbd5f5;
+            color: var(--text-dark);
+        }
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+        .form-control:focus,
+        .form-select:focus {
+            background-color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+            color: var(--text-dark);
         }
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #0f172a 100%);
             border: none;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.45);
+        }
+        .btn-outline-secondary {
+            border-color: #cbd5f5;
+            color: var(--text-dark);
+        }
+        .btn-outline-secondary:hover {
+            background-color: var(--deep-blue-light);
+            border-color: var(--deep-blue-alt);
+            color: var(--text-dark);
+        }
+        .alert-success {
+            background-color: #ecfdf3;
+            border-color: #4ade80;
+            color: #166534;
+        }
+        .alert-danger {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
         }
     </style>
 </head>
@@ -76,7 +130,9 @@
             <div class="col-md-9 col-lg-10">
                 <div class="main-content p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2><i class="fas fa-user-plus me-2"></i>Add New User</h2>
+                        <h2 class="mb-0">
+                            <i class="fas fa-user-plus me-2" style="color:#1d4ed8;"></i>Add New User
+                        </h2>
                         <a href="${pageContext.request.contextPath}/admin" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
@@ -100,7 +156,9 @@
                         <div class="col-md-8">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>User Information</h5>
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-user me-2" style="color:#1d4ed8;"></i>User Information
+                                    </h5>
                                 </div>
                                 <div class="card-body">
                                     <form method="post" action="${pageContext.request.contextPath}/admin">
@@ -170,3 +228,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

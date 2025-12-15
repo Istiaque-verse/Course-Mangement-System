@@ -10,44 +10,77 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f3f4f6;
+            min-height: 100vh;
+        }
+        :root {
+            --deep-teal: #0f766e;      /* primary */
+            --deep-teal-alt: #115e59;
+            --soft-aqua: #5eead4;      /* accent */
+            --teal-light: #e0f2f1;     /* very light tint */
+            --text-dark: #0f172a;
+        }
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--deep-teal) 0%, var(--deep-teal-alt) 60%, #022c22 100%);
+            color: #fff;
         }
         .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             padding: 12px 20px;
             border-radius: 8px;
             margin: 2px 0;
             transition: all 0.3s;
+            font-weight: 500;
         }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #ffffff;
+            background: rgba(94, 234, 212, 0.18);
+            transform: translateX(4px);
         }
         .main-content {
-            background-color: #f8f9fa;
+            background-color: #f3f4f6;
             min-height: 100vh;
         }
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 15px rgba(15, 23, 42, 0.12);
             transition: transform 0.3s;
+            background-color: #ffffff;
+            color: var(--text-dark);
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
         }
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--deep-teal) 0%, var(--deep-teal-alt) 50%, #022c22 100%);
             color: white;
         }
+        .stat-card p {
+            color: #e0f2f1;
+        }
+        .card-header {
+            background-color: var(--teal-light);
+            border-bottom: 1px solid #cbd5d4;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        .table {
+            color: var(--text-dark);
+        }
         .table th {
-            background-color: #f8f9fa;
+            background-color: var(--teal-light);
             border-top: none;
             font-weight: 600;
-            color: #495057;
+            color: var(--text-dark);
+        }
+        .table tbody tr {
+            border-color: #e5e7eb;
+        }
+        .table tbody tr:hover {
+            background-color: #ecfeff;
         }
         .btn-action {
             padding: 5px 10px;
@@ -56,7 +89,34 @@
             font-size: 0.8rem;
         }
         .course-card {
-            border-left: 4px solid #667eea;
+            border-left: 4px solid var(--deep-teal);
+        }
+        .badge.bg-primary {
+            background-color: var(--deep-teal) !important;
+        }
+        .badge.bg-info {
+            background-color: var(--soft-aqua) !important;
+            color: #022c22;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--deep-teal) 0%, var(--deep-teal-alt) 50%, #022c22 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 4px 12px rgba(15, 118, 110, 0.5);
+        }
+        .alert-success {
+            background-color: #ecfdf3;
+            border-color: #4ade80;
+            color: #166534;
+        }
+        .alert-danger {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
+        }
+        .text-muted {
+            color: #6b7280 !important;
         }
     </style>
 </head>
@@ -86,7 +146,10 @@
             <div class="col-md-9 col-lg-10">
                 <div class="main-content p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2><i class="fas fa-tachometer-alt me-2"></i>Teacher Dashboard</h2>
+                        <h2 class="mb-0">
+                            <i class="fas fa-tachometer-alt me-2" style="color: var(--deep-teal);"></i>
+                            Teacher Dashboard
+                        </h2>
                         <span class="text-muted">Welcome, ${sessionScope.user.firstName}!</span>
                     </div>
                     
@@ -138,7 +201,9 @@
                     <!-- My Courses -->
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-book me-2"></i>My Courses</h5>
+                            <h5 class="mb-0">
+                                <i class="fas fa-book me-2" style="color: var(--deep-teal-alt);"></i>My Courses
+                            </h5>
                         </div>
                         <div class="card-body">
                             <c:choose>
@@ -151,7 +216,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table class="table table-hover align-middle">
                                             <thead>
                                                 <tr>
                                                     <th>Course Code</th>
@@ -195,3 +260,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+

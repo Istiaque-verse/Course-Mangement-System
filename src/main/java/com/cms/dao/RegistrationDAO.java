@@ -8,13 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RegistrationDAO {
-    
+
     public boolean registerStudent(int studentId, int courseId) {
-        // Atomic upsert: if row exists (unique key on student_id,course_id), set status to 'active'
-        String upsert = "INSERT INTO enrollments (student_id, course_id, status) VALUES (?, ?, 'active') " +
-                        "ON DUPLICATE KEY UPDATE status = 'active', enrollment_date = CURRENT_TIMESTAMP";
+        String upsert =
+            "INSERT INTO registrations (student_id, course_id, status) " +
+            "VALUES (?, ?, 'ACTIVE') " +
+            "ON DUPLICATE KEY UPDATE status = 'ACTIVE', registered_at = CURRENT_TIMESTAMP";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(upsert)) {
+
             stmt.setInt(1, studentId);
             stmt.setInt(2, courseId);
             return stmt.executeUpdate() > 0;
@@ -23,136 +26,151 @@ public class RegistrationDAO {
         }
         return false;
     }
-    
+
     public boolean dropCourse(int studentId, int courseId) {
-        String sql = "UPDATE enrollments SET status = 'dropped' WHERE student_id = ? AND course_id = ?";
-        
+        String sql =
+            "UPDATE registrations " +
+            "   SET status = 'DROPPED' " +
+            " WHERE student_id = ? AND course_id = ?";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, studentId);
             stmt.setInt(2, courseId);
-            
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    
+
     public List<Registration> findByStudentId(int studentId) {
-        String sql = "SELECT e.*, u.full_name, c.course_name, c.course_code " +
-                    "FROM enrollments e " +
-                    "JOIN users u ON e.student_id = u.user_id " +
-                    "JOIN courses c ON e.course_id = c.course_id " +
-                    "WHERE e.student_id = ? AND e.status = 'active' " +
-                    "ORDER BY e.enrollment_date DESC";
-        
-        List<Registration> registrations = new ArrayList<>();
-        
+        String sql =
+            "SELECT r.*, " +
+            "       CONCAT(u.first_name, ' ', u.last_name) AS student_name, " +
+            "       c.course_name, c.course_code " +
+            "  FROM registrations r " +
+            "  JOIN users   u ON r.student_id = u.id " +
+            "  JOIN courses c ON r.course_id = c.id " +
+            " WHERE r.student_id = ? " +
+            "   AND r.status = 'ACTIVE' " +
+            " ORDER BY r.registered_at DESC";
+
+        List<Registration> list = new ArrayList<>();
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, studentId);
-            ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                registrations.add(mapResultSetToRegistration(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToRegistration(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return registrations;
+        return list;
     }
-    
+
     public List<Registration> findByCourseId(int courseId) {
-        String sql = "SELECT e.*, u.full_name, c.course_name, c.course_code " +
-                    "FROM enrollments e " +
-                    "JOIN users u ON e.student_id = u.user_id " +
-                    "JOIN courses c ON e.course_id = c.course_id " +
-                    "WHERE e.course_id = ? AND e.status = 'active' " +
-                    "ORDER BY u.full_name";
-        
-        List<Registration> registrations = new ArrayList<>();
-        
+        String sql =
+            "SELECT r.*, " +
+            "       CONCAT(u.first_name, ' ', u.last_name) AS student_name, " +
+            "       c.course_name, c.course_code " +
+            "  FROM registrations r " +
+            "  JOIN users   u ON r.student_id = u.id " +
+            "  JOIN courses c ON r.course_id = c.id " +
+            " WHERE r.course_id = ? " +
+            "   AND r.status = 'ACTIVE' " +
+            " ORDER BY student_name";
+
+        List<Registration> list = new ArrayList<>();
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, courseId);
-            ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                registrations.add(mapResultSetToRegistration(rs));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapResultSetToRegistration(rs));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return registrations;
+        return list;
     }
-    
+
     public boolean isStudentRegistered(int studentId, int courseId) {
-        String sql = "SELECT COUNT(*) FROM enrollments WHERE student_id = ? AND course_id = ? AND status = 'active'";
-        
+        String sql =
+            "SELECT COUNT(*) " +
+            "  FROM registrations " +
+            " WHERE student_id = ? " +
+            "   AND course_id = ? " +
+            "   AND status = 'ACTIVE'";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, studentId);
             stmt.setInt(2, courseId);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1) > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    
+
     public int getStudentCountForCourse(int courseId) {
-        String sql = "SELECT COUNT(*) FROM enrollments WHERE course_id = ? AND status = 'active'";
-        
+        String sql =
+            "SELECT COUNT(*) " +
+            "  FROM registrations " +
+            " WHERE course_id = ? " +
+            "   AND status = 'ACTIVE'";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, courseId);
-            ResultSet rs = stmt.executeQuery();
-            
-            if (rs.next()) {
-                return rs.getInt(1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
     }
-    
+
     private Registration mapResultSetToRegistration(ResultSet rs) throws SQLException {
-        Registration registration = new Registration();
-        registration.setId(rs.getInt("enrollment_id"));
-        registration.setStudentId(rs.getInt("student_id"));
-        registration.setCourseId(rs.getInt("course_id"));
-        registration.setStudentName(rs.getString("full_name"));
-        registration.setCourseName(rs.getString("course_name"));
-        registration.setCourseCode(rs.getString("course_code"));
-        // Handle timestamp safely
-        java.sql.Timestamp enrollmentDate = rs.getTimestamp("enrollment_date");
-        if (enrollmentDate != null) {
-            registration.setRegisteredAt(enrollmentDate.toLocalDateTime());
+        Registration r = new Registration();
+        r.setId(rs.getInt("id"));
+        r.setStudentId(rs.getInt("student_id"));
+        r.setCourseId(rs.getInt("course_id"));
+        r.setStudentName(rs.getString("student_name"));
+        r.setCourseName(rs.getString("course_name"));
+        r.setCourseCode(rs.getString("course_code"));
+
+        Timestamp ts = rs.getTimestamp("registered_at");
+        if (ts != null) {
+            r.setRegisteredAt(ts.toLocalDateTime());
         } else {
-            registration.setRegisteredAt(java.time.LocalDateTime.now());
+            r.setRegisteredAt(java.time.LocalDateTime.now());
         }
-        
-        // Map status
+
         String status = rs.getString("status");
-        if ("active".equals(status)) {
-            registration.setStatus(Registration.Status.ACTIVE);
-        } else if ("dropped".equals(status)) {
-            registration.setStatus(Registration.Status.DROPPED);
+        if ("ACTIVE".equals(status)) {
+            r.setStatus(Registration.Status.ACTIVE);
+        } else if ("DROPPED".equals(status)) {
+            r.setStatus(Registration.Status.DROPPED);
         } else {
-            registration.setStatus(Registration.Status.ACTIVE); // Default
+            r.setStatus(Registration.Status.ACTIVE);
         }
-        
-        return registration;
+
+        return r;
     }
 }
+

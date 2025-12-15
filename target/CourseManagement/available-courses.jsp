@@ -9,49 +9,96 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        body {
+            background-color: #f3f4f6;
+            min-height: 100vh;
+        }
+        :root {
+            --primary-cyan: #06b6d4;
+            --primary-cyan-dark: #0891b2;
+            --cyan-light: #e0f2fe;
+            --charcoal: #111827;
+            --charcoal-soft: #1f2933;
+        }
         .sidebar {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--charcoal) 0%, var(--charcoal-soft) 40%, #020617 100%);
+            color: #fff;
         }
         .sidebar .nav-link {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.85);
             padding: 12px 20px;
             border-radius: 8px;
             margin: 2px 0;
             transition: all 0.3s;
+            font-weight: 500;
         }
-        .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            color: white;
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(5px);
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: #ffffff;
+            background: rgba(6, 182, 212, 0.25);
+            transform: translateX(4px);
         }
         .main-content {
-            background-color: #f8f9fa;
+            background-color: #f3f4f6;
             min-height: 100vh;
         }
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 5px 15px rgba(15, 23, 42, 0.12);
             transition: transform 0.3s;
+            background-color: #ffffff;
         }
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
         }
         .course-card {
-            border-left: 4px solid #667eea;
+            border-left: 4px solid var(--primary-cyan);
         }
         .table th {
-            background-color: #f8f9fa;
+            background-color: var(--cyan-light);
             border-top: none;
             font-weight: 600;
-            color: #495057;
+            color: var(--charcoal);
         }
         .btn-action {
             padding: 5px 10px;
             margin: 2px;
             border-radius: 20px;
             font-size: 0.8rem;
+        }
+        .badge.bg-primary {
+            background-color: var(--primary-cyan-dark) !important;
+        }
+        .badge.bg-info {
+            background-color: #22c55e !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-cyan) 0%, var(--primary-cyan-dark) 60%, #0f172a 100%);
+            border: none;
+        }
+        .btn-primary:hover {
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.5);
+        }
+        .btn-outline-secondary {
+            border-color: #cbd5f5;
+            color: #111827;
+        }
+        .btn-outline-secondary:hover {
+            background-color: var(--cyan-light);
+            border-color: var(--primary-cyan-dark);
+            color: #111827;
+        }
+        .alert-success {
+            background-color: #ecfdf3;
+            border-color: #4ade80;
+            color: #166534;
+        }
+        .alert-danger {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+            color: #b91c1c;
         }
     </style>
 </head>
@@ -87,7 +134,10 @@
             <div class="col-md-9 col-lg-10">
                 <div class="main-content p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2><i class="fas fa-plus-circle me-2"></i>Available Courses</h2>
+                        <h2 class="mb-0">
+                            <i class="fas fa-plus-circle me-2" style="color: var(--primary-cyan-dark);"></i>
+                            Available Courses
+                        </h2>
                         <a href="${pageContext.request.contextPath}/student" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
                         </a>
@@ -109,7 +159,10 @@
                     
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Courses Available for Registration</h5>
+                            <h5 class="mb-0">
+                                <i class="fas fa-plus-circle me-2" style="color: var(--primary-cyan-dark);"></i>
+                                Courses Available for Registration
+                            </h5>
                         </div>
                         <div class="card-body">
                             <c:choose>
@@ -125,7 +178,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <div class="table-responsive">
-                                        <table class="table table-hover">
+                                        <table class="table table-hover align-middle">
                                             <thead>
                                                 <tr>
                                                     <th>Course Code</th>
@@ -198,7 +251,9 @@
                                                     <h6 class="card-title">
                                                         <i class="fas fa-check-circle me-2"></i>Available
                                                     </h6>
-                                                    <h4 class="text-success">${availableCourses.stream().filter(c -> !c.full).count()}</h4>
+                                                    <h4 class="text-success">
+                                                        ${availableCourses.stream().filter(c -> !c.full).count()}
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>
@@ -208,7 +263,9 @@
                                                     <h6 class="card-title">
                                                         <i class="fas fa-lock me-2"></i>Full
                                                     </h6>
-                                                    <h4 class="text-warning">${availableCourses.stream().filter(c -> c.full).count()}</h4>
+                                                    <h4 class="text-warning">
+                                                        ${availableCourses.stream().filter(c -> c.full).count()}
+                                                    </h4>
                                                 </div>
                                             </div>
                                         </div>

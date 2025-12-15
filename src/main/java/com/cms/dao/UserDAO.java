@@ -8,15 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAO {
-    
+
     public User findByUsername(String username) {
         String sql = "SELECT * FROM users WHERE username = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return mapResultSetToUser(rs);
             }
@@ -25,15 +25,15 @@ public class UserDAO {
         }
         return null;
     }
-    
+
     public User findById(int id) {
-        String sql = "SELECT * FROM users WHERE user_id = ?";
+        String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return mapResultSetToUser(rs);
             }
@@ -42,17 +42,18 @@ public class UserDAO {
         }
         return null;
     }
-    
+
     public List<User> findByRole(User.Role role) {
-        String sql = "SELECT * FROM users WHERE user_type = ? ORDER BY full_name";
+        String sql = "SELECT * FROM users WHERE role = ? ORDER BY first_name, last_name";
         List<User> users = new ArrayList<>();
-        
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
-            stmt.setString(1, role.name().toLowerCase());
+
+            // DB stores ENUM('ADMIN','TEACHER','STUDENT')
+            stmt.setString(1, role.name());
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 users.add(mapResultSetToUser(rs));
             }
@@ -61,29 +62,24 @@ public class UserDAO {
         }
         return users;
     }
-    
+
     public boolean create(User user) {
-        String sql = "INSERT INTO users (username, password, email, user_type, full_name, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
-        
+        String sql = "INSERT INTO users " +
+                "(username, password, email, role, first_name, last_name, created_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            
+
             stmt.setString(1, user.getUsername());
-            stmt.setString(2, user.getPassword());
+            stmt.setString(2, user.getPassword());  // should already be BCrypt hash
             stmt.setString(3, user.getEmail());
-            stmt.setString(4, user.getRole().name().toLowerCase());
-            // Combine first and last name into full_name if provided
-            String fullName = (user.getFirstName() != null ? user.getFirstName().trim() : "");
-            if (user.getLastName() != null && !user.getLastName().trim().isEmpty()) {
-                fullName = (fullName + " " + user.getLastName().trim()).trim();
-            }
-            if (fullName.isEmpty() && user.getUsername() != null) {
-                fullName = user.getUsername();
-            }
-            stmt.setString(5, fullName);
-            
+            stmt.setString(4, user.getRole().name()); // matches ENUM
+            stmt.setString(5, user.getFirstName());
+            stmt.setString(6, user.getLastName());
+
             int affectedRows = stmt.executeUpdate();
-            
+
             if (affectedRows > 0) {
                 ResultSet generatedKeys = stmt.getGeneratedKeys();
                 if (generatedKeys.next()) {
@@ -96,39 +92,34 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     public boolean update(User user) {
-        String sql = "UPDATE users SET username = ?, email = ?, user_type = ?, full_name = ? WHERE user_id = ?";
-        
+        String sql = "UPDATE users SET username = ?, email = ?, role = ?, " +
+                "first_name = ?, last_name = ? WHERE id = ?";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setString(1, user.getUsername());
             stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getRole().name().toLowerCase());
-            String fullName = (user.getFirstName() != null ? user.getFirstName().trim() : "");
-            if (user.getLastName() != null && !user.getLastName().trim().isEmpty()) {
-                fullName = (fullName + " " + user.getLastName().trim()).trim();
-            }
-            if (fullName.isEmpty() && user.getUsername() != null) {
-                fullName = user.getUsername();
-            }
-            stmt.setString(4, fullName);
-            stmt.setInt(5, user.getId());
-            
+            stmt.setString(3, user.getRole().name());
+            stmt.setString(4, user.getFirstName());
+            stmt.setString(5, user.getLastName());
+            stmt.setInt(6, user.getId());
+
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    
+
     public boolean delete(int id) {
-        String sql = "DELETE FROM users WHERE user_id = ?";
-        
+        String sql = "DELETE FROM users WHERE id = ?";
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -136,15 +127,15 @@ public class UserDAO {
         }
         return false;
     }
-    
+
     public List<User> getAllUsers() {
-        String sql = "SELECT * FROM users ORDER BY user_type, full_name";
+        String sql = "SELECT * FROM users ORDER BY role, first_name, last_name";
         List<User> users = new ArrayList<>();
-        
+
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
-            
+
             while (rs.next()) {
                 users.add(mapResultSetToUser(rs));
             }
@@ -153,44 +144,35 @@ public class UserDAO {
         }
         return users;
     }
-    
+
     private User mapResultSetToUser(ResultSet rs) throws SQLException {
         User user = new User();
-        user.setId(rs.getInt("user_id"));
+        user.setId(rs.getInt("id"));
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password"));
         user.setEmail(rs.getString("email"));
-        
-        // Map user_type to role
-        String userType = rs.getString("user_type");
-        if ("admin".equals(userType)) {
-            user.setRole(User.Role.ADMIN);
-        } else if ("teacher".equals(userType)) {
-            user.setRole(User.Role.TEACHER);
-        } else if ("student".equals(userType)) {
-            user.setRole(User.Role.STUDENT);
+
+        // Map ENUM role column directly
+        String roleStr = rs.getString("role"); // 'ADMIN','TEACHER','STUDENT'
+        if (roleStr != null) {
+            user.setRole(User.Role.valueOf(roleStr)); // assumes same enum names
         }
-        
-        // Split full_name into first_name and last_name
-        String fullName = rs.getString("full_name");
-        if (fullName != null && fullName.contains(" ")) {
-            String[] names = fullName.split(" ", 2);
-            user.setFirstName(names[0]);
-            user.setLastName(names[1]);
-        } else {
-            user.setFirstName(fullName != null ? fullName : "");
-            user.setLastName("");
-        }
-        
-        // Handle timestamp columns safely
-        java.sql.Timestamp createdAt = rs.getTimestamp("created_at");
+
+        // First/last name are separate columns now
+        user.setFirstName(rs.getString("first_name"));
+        user.setLastName(rs.getString("last_name"));
+
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
         if (createdAt != null) {
             user.setCreatedAt(createdAt.toLocalDateTime());
-            user.setUpdatedAt(createdAt.toLocalDateTime()); // Use created_at as updated_at
-        } else {
-            user.setCreatedAt(java.time.LocalDateTime.now());
-            user.setUpdatedAt(java.time.LocalDateTime.now());
         }
+        if (updatedAt != null) {
+            user.setUpdatedAt(updatedAt.toLocalDateTime());
+        } else if (createdAt != null) {
+            user.setUpdatedAt(createdAt.toLocalDateTime());
+        }
+
         return user;
     }
 }

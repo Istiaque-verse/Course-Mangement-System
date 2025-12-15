@@ -10,40 +10,70 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: radial-gradient(circle at top, #1e3c72 0%, #1b2a49 40%, #020617 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
+            color: #fff;
         }
         .login-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff;
             border-radius: 15px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #0f172a;
         }
         .login-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #0f172a 100%);
+            color: #fff;
             border-radius: 15px 15px 0 0;
             padding: 2rem;
             text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .login-header h3 {
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .form-label {
+            color: #0f172a;
+            font-weight: 500;
+        }
+        .form-control {
+            background-color: #f9fafb;
+            border-color: #cbd5f5;
+            color: #0f172a;
+        }
+        .form-control::placeholder {
+            color: #9ca3af;
         }
         .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+            background-color: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+            color: #0f172a;
         }
         .btn-login {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #0f172a 100%);
             border: none;
             border-radius: 25px;
             padding: 12px 30px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #fff;
         }
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.5);
+        }
+        .alert-danger {
+            background-color: rgba(220, 38, 38, 0.06);
+            border-color: rgba(220, 38, 38, 0.5);
+            color: #b91c1c;
+        }
+        small.text-muted {
+            color: #6b7280 !important;
         }
     </style>
 </head>
@@ -69,7 +99,7 @@
                         <form method="post" action="${pageContext.request.contextPath}/login">
                             <div class="mb-3">
                                 <label for="username" class="form-label">
-                                    <i class="fas fa-user me-2"></i>Username
+                                    <i class="fas fa-user me-2 text-primary"></i>Username
                                 </label>
                                 <input type="text" class="form-control" id="username" name="username" 
                                        placeholder="Enter your username" required>
@@ -77,14 +107,14 @@
                             
                             <div class="mb-4">
                                 <label for="password" class="form-label">
-                                    <i class="fas fa-lock me-2"></i>Password
+                                    <i class="fas fa-lock me-2 text-primary"></i>Password
                                 </label>
                                 <input type="password" class="form-control" id="password" name="password" 
                                        placeholder="Enter your password" required>
                             </div>
                             
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-login">
+                                <button type="submit" class="btn btn-login">
                                     <i class="fas fa-sign-in-alt me-2"></i>Sign In
                                 </button>
                             </div>
@@ -92,8 +122,8 @@
                         
                         <div class="text-center mt-4">
                             <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Default credentials: admin1/password123
+                                <i class="fas fa-info-circle me-1 text-primary"></i>
+                                Default credentials: admin1/admin123
                             </small>
                         </div>
                     </div>
